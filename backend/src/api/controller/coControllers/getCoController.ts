@@ -4,17 +4,17 @@
 import CompanyModel from "../../models/companyModel";
 import catchAsync from "../../utils/catchAsync";
 import { getOne } from "../../utils/handlerFactories";
-import CoQuery from "../../utils/QueryBuilder";
+import QueryBuilder from "../../utils/QueryBuilder";
 
 const fields =
   "name permalink homepage_url category_code founded_year number_of_employees description overview total_money_raised";
 
-export const getMultCoController = catchAsync(async (req, res) => {
-  const queryInstance = new CoQuery({
+export const getMultCo = catchAsync(async (req, res) => {
+  const queryInstance = new QueryBuilder({
     query: CompanyModel.find(),
     queryString: req.query,
   });
-  queryInstance.search().limitedFields(fields);
+  queryInstance.search().filter().limitedFields(fields);
   await queryInstance.paginate();
 
   const companies = await queryInstance.query;
@@ -29,4 +29,4 @@ export const getMultCoController = catchAsync(async (req, res) => {
   });
 });
 
-export const getSingleCoController = getOne(CompanyModel);
+export const getSingleCo = getOne(CompanyModel);

@@ -2,13 +2,13 @@
 
 import express from "express";
 import {
-  getMultCoController,
-  getSingleCoController,
+  getMultCo,
+  getSingleCo,
 } from "../controller/coControllers/getCoController";
 const coRouter = express.Router();
 
 // get companies routes
-coRouter.route("/").get(getMultCoController);
-coRouter.route("/:id").get(getSingleCoController);
+coRouter.route("/").get(getMultCo);
+coRouter.route("/:id").get(getSingleCo);
 
 export default coRouter;
