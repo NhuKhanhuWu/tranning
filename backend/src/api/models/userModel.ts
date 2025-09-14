@@ -2,6 +2,8 @@
 
 import mongoose from "mongoose";
 import validator from "validator";
+import bcrypt from "bcrypt";
+import { IUserDocument } from "../interface/IUser";
 
 const { Schema } = mongoose;
 
@@ -31,6 +33,16 @@ const userSchema = new Schema(
       maxLength: [128, "Password must be at most 128 characters"],
       select: false, // don't return password by default
     },
+    passwordConfirm: {
+      type: String,
+      required: [true, "Please confirm your password"],
+      validate: {
+        validator: function (this: IUserDocument, el: string): boolean {
+          return el === this.password;
+        },
+        message: "Passwords are not the same!",
+      },
+    },
     role: {
       type: String,
       enum: ["user", "admin", "moderator"],
@@ -50,6 +62,19 @@ const userSchema = new Schema(
     timestamps: true, // createdAt, updatedAt
   }
 );
+
+// Middleware to hash password before saving
+userSchema.pre<IUserDocument>("save", async function (next) {
+  if (!this.isModified("password") || !this.password) return next();
+
+  // hash password before save
+  this.password = await bcrypt.hash(this.password, 12);
+
+  // removie password comfirm
+  this.passwordConfirm = undefined;
+
+  next();
+});
 
 // Indexes for quick lookups
 userSchema.index({ email: 1 });

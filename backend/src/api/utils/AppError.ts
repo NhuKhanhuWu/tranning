@@ -1,16 +1,11 @@
 /** @format */
 
-interface IAppErrorConstructor {
-  statusCode: number;
-  message: string;
-}
-
 class AppError extends Error {
   status: string;
   statusCode: number;
   isOperational: boolean;
 
-  constructor({ message, statusCode }: IAppErrorConstructor) {
+  constructor(message: string, statusCode: number) {
     super(message);
 
     this.statusCode = statusCode;
