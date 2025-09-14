@@ -52,7 +52,7 @@ class QueryBuilder {
   }
 
   _validateField(
-    field: string | undefined,
+    field: string,
     allowedFields: string | any[],
     invalidFields: any[]
   ) {
@@ -64,13 +64,14 @@ class QueryBuilder {
   }
 
   _buildMongoQuery(allowedFields: string[] = []) {
-    const mongoQuery = {};
+    const mongoQuery: Record<string, any> = {};
     const invalidFields: any[] = [];
 
     Object.keys(this.queryString).forEach((key) => {
       if (this._isReservedField(key)) return;
 
       const { field, operator } = this._parseOperator(key);
+      if (!field) return; // make sure field is defined
 
       // Validate allowed fields
       if (!this._validateField(field, allowedFields, invalidFields)) return;
